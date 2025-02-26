@@ -1,3 +1,5 @@
+// src/pages/myprojects/index.js
+
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import LibraryTemplate from '@/components/templates/LibraryTemplate';
@@ -22,7 +24,7 @@ const LibraryPage = () => {
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
      const [ocrResults, setOcrResults] = useState([])
-
+    const [isLoading, setIsLoading] = useState(false); 
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -47,6 +49,7 @@ const LibraryPage = () => {
 
     const fetchProjects = async () => {
       if(!loggedInUserId) return;
+        setIsLoading(true); // Mulai loading
         try {
             const response = await fetch(`/api/projects?page=${currentPage}&limit=${projectsPerPage}&search=${searchTerm}&userId=${loggedInUserId}`);
             if (!response.ok) {
@@ -66,10 +69,13 @@ const LibraryPage = () => {
                 duration: 5000,
                 position: "top-center",
             });
+        } finally {
+             setIsLoading(false); // Selesai loading
         }
     };
       const fetchOcrResults = async () => {
            if(!loggedInUserId) return;
+            setIsLoading(true); // Mulai loading
         try {
              const projectIds = projects.map(project => project.projectId);
             const response = await fetch(`/api/getocrdatabyprojectid?projectIds=${JSON.stringify(projectIds)}`);
@@ -88,6 +94,8 @@ const LibraryPage = () => {
                 duration: 5000,
                 position: "top-center",
             });
+         } finally {
+             setIsLoading(false); // Selesai loading
          }
     };
 
@@ -187,6 +195,7 @@ const LibraryPage = () => {
             handlePageChange={handlePageChange}
             handleDeleteConfirm={handleDeleteConfirm}
             handleDeleteCancel={handleDeleteCancel}
+            isLoading={isLoading} 
         />
     );
 };

@@ -1,3 +1,4 @@
+// src/pages/users/index.js
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import UserManagementTemplate from '@/components/templates/UserManagementTemplate';
@@ -17,6 +18,7 @@ const UsersPage = () => {
     const [userToDelete, setUserToDelete] = useState(null);
     const [password, setPassword] = useState("");
     const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // Tambahkan state isLoading
 
 
     const [editedUserData, setEditedUserData] = useState({
@@ -40,6 +42,7 @@ const UsersPage = () => {
 
 
     const fetchUsers = async () => {
+        setIsLoading(true); // Atur isLoading menjadi true sebelum pengambilan data
         try {
             const response = await fetch(`/api/users?page=${currentPage}&limit=${usersPerPage}&search=${searchTerm}`);
             if (!response.ok) {
@@ -62,6 +65,8 @@ const UsersPage = () => {
                 duration: 5000,
                 position: "top-center",
             });
+        } finally {
+            setIsLoading(false); // Atur isLoading menjadi false setelah selesai pengambilan data
         }
     };
 
@@ -228,7 +233,8 @@ const UsersPage = () => {
             handleDeleteConfirm={handleDeleteConfirm}
             handleDeleteCancel={handleDeleteCancel}
             handleViewProjectsClick={handleViewProjectsClick}
-               loggedInUserId={loggedInUserId}
+            loggedInUserId={loggedInUserId}
+            isLoading={isLoading} // Kirim isLoading
         />
     );
 };

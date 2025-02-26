@@ -1,3 +1,4 @@
+// src/pages/projects/index.js
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import AdminProjectManagementTemplate from '@/components/templates/AdminProjectManagementTemplate';
@@ -21,11 +22,13 @@ const ProjectsPage = () => {
     const [uploadQueueImages, setUploadQueueImages] = useState([]);
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
-     const [ocrResults, setOcrResults] = useState([]);
+    const [ocrResults, setOcrResults] = useState([]);
     const [users, setUsers] = useState([]);
-      const [selectedUser, setSelectedUser] = useState("");
+    const [selectedUser, setSelectedUser] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+
+    const [isLoading, setIsLoading] = useState(false); 
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -48,28 +51,32 @@ const ProjectsPage = () => {
      }, [projects]);
 
     const fetchUsers = async () => {
-    try {
-         const response = await fetch(`/api/users`);
-         if (!response.ok) {
-             throw new Error(`HTTP error! status: ${response.status}`);
+        setIsLoading(true); // Atur isLoading menjadi true sebelum pengambilan data
+        try {
+            const response = await fetch(`/api/users`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        const data = await response.json();
-         if (data.length > 0) {
-              setUsers(data);
-         } else {
-             setUsers([]);
-         }
+            const data = await response.json();
+            if (data.length > 0) {
+                setUsers(data);
+            } else {
+                setUsers([]);
+            }
         } catch (error) {
             console.error("Error fetching users:", error);
             toast.error("Terjadi kesalahan saat mengambil data user.", {
                 duration: 5000,
                 position: "top-center",
             });
+        } finally {
+            setIsLoading(false); // Atur isLoading menjadi false setelah selesai pengambilan data
         }
     };
 
     const fetchProjects = async () => {
-      if(!loggedInUserId) return;
+        setIsLoading(true); // Atur isLoading menjadi true sebelum pengambilan data
+        if(!loggedInUserId) return;
         try {
             let url = `/api/projects?page=${currentPage}&limit=${projectsPerPage}&search=${searchTerm}`;
              if (selectedUser) {
@@ -103,10 +110,13 @@ const ProjectsPage = () => {
                 duration: 5000,
                 position: "top-center",
             });
+        } finally {
+            setIsLoading(false); // Atur isLoading menjadi false setelah selesai pengambilan data
         }
     };
 
     const fetchOcrResults = async () => {
+        setIsLoading(true); // Atur isLoading menjadi true sebelum pengambilan data
         try {
               const projectIds = projects.map(project => project.projectId);
              const response = await fetch(`/api/getocrdatabyprojectid?projectIds=${JSON.stringify(projectIds)}`);
@@ -125,7 +135,9 @@ const ProjectsPage = () => {
                 duration: 5000,
                 position: "top-center",
              });
-         }
+         } finally {
+            setIsLoading(false); // Atur isLoading menjadi false setelah selesai pengambilan data
+        }
     };
 
 
@@ -243,6 +255,7 @@ const ProjectsPage = () => {
             startDate={startDate}
            endDate={endDate}
            selectedUser={selectedUser}
+            isLoading={isLoading} 
         >
         
                 <UploadQueueModal

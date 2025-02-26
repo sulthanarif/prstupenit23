@@ -1,3 +1,4 @@
+// src/components/templates/AdminProjectManagementTemplate.js
 import React from 'react';
 import SectionHeader from '../organisms/SectionHeader';
 import LibraryTable from '../organisms/LibraryTable';
@@ -24,12 +25,13 @@ const AdminProjectManagementTemplate = ({
     users,
     startDate,
     endDate,
-    selectedUser
+    selectedUser,
+    isLoading // Terima isLoading
 }) => (
     <section className="p-3 sm:p-5">
         <div className="mx-auto max-w-screen-xl px-4 lg:px-12 border-none">
             <div className="bg-white dark:bg-gray-800 relative shadow-none sm:rounded-xl overflow-hidden rounded-xl border-none">
-                <SectionHeader title="Admin Project Management" onSearchChange={handleSearchChange}>
+                <SectionHeader title="Admin Project Management" onSearchChange={handleSearchChange} isLoading={isLoading}> {/* Teruskan isLoading */}
                     <div className="flex flex-col items-start mt-4 md:mt-0 md:flex-row md:items-center flex-1 md:justify-end space-y-3 md:space-y-0 md:space-x-3">
                         <select
                             id="user-filter"

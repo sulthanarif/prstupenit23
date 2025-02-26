@@ -1,3 +1,4 @@
+// src/components/templates/UserManagementTemplate.js
 import React from 'react';
 import SectionHeader from '../organisms/SectionHeader';
 import UsersTable from '../organisms/UsersTable';
@@ -25,13 +26,14 @@ const UserManagementTemplate = ({
     handleInputChange,
     handleDeleteConfirm,
     handleDeleteCancel,
-    loggedInUserId
+    loggedInUserId,
+    isLoading // Terima isLoading
 }) => (
     <section className="p-3 sm:p-5">
         <div className="mx-auto max-w-screen-xl px-4 lg:px-12 border-none">
         <div className="bg-white dark:bg-gray-800 relative shadow-none sm:rounded-xl overflow-hidden rounded-xl border-none">
 
-        <SectionHeader title="Kelola Akun" onSearchChange={handleSearchChange} className="ml-30" />
+        <SectionHeader title="Kelola Akun" onSearchChange={handleSearchChange} className="ml-30" isLoading={isLoading} /> {/* Teruskan isLoading */}
 
                 <div className="px-1 sm:px-10 py-0 bg-white border-none "> 
                      <UsersTable
